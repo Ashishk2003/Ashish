@@ -1,113 +1,103 @@
 // =============================================
-//  ASHISH KUMAR PORTFOLIO — script.js
+//  ASHISH KUMAR PORTFOLIO \u2014 script.js
 // =============================================
 
 document.addEventListener('DOMContentLoaded', function () {
 
-  /* ─────────────────────────────────────────
-     1. TERMINAL / CODE RAIN BACKGROUND
-  ───────────────────────────────────────── */
-  const canvas = document.getElementById('terminal-canvas');
+  /* \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+     1. BACKGROUND IMAGES PER SECTION
+  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  const bgMap = [
+    { sel: '#home',       img: 'assets/bg-hero.jpg' },
+    { sel: '#about',      img: 'assets/bg-about.jpg' },
+    { sel: '#skills',     img: 'assets/bg-skills.jpg' },
+    { sel: '#projects',   img: 'assets/bg-projects.jpg' },
+    { sel: '#experience', img: 'assets/bg-experience.jpg' },
+    { sel: '#contact',    img: 'assets/download.jpeg' }
+  ];
+  bgMap.forEach(item => {
+    const el = document.querySelector(item.sel);
+    if (el) {
+      el.style.backgroundImage = `url('${item.img}')`;
+      el.style.backgroundSize = 'cover';
+      el.style.backgroundPosition = 'center';
+      el.style.backgroundRepeat = 'no-repeat';
+    }
+  });
+
+  /* \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+     2. PARTICLE CANVAS (Hero background overlay)
+  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+  const canvas = document.getElementById('hero-canvas');
   if (canvas) {
     const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
 
-    // Code snippets that scroll down
-    const codeLines = [
-      'const dev = new Developer("Ashish");',
-      'import java.util.*;',
-      'def solve(n): return n * 2',
-      'SELECT * FROM projects WHERE status="done";',
-      'git commit -m "feat: portfolio v2"',
-      'console.log("Hello, World!");',
-      'for i in range(len(data)):',
-      'public static void main(String[] args){',
-      'npm install && npm start',
-      'pip install flask pandas numpy',
-      'aws s3 sync . s3://my-bucket/',
-      'int main() { return 0; }',
-      'if err != nil { log.Fatal(err) }',
-      'curl -X POST /api/v1/deploy',
-      '#include <stdio.h>',
-      'System.out.println("Build OK");',
-      'docker build -t app:latest .',
-      'ssh ubuntu@ec2-instance',
-      'while(true) { keepLearning(); }',
-      'SELECT name, CGPA FROM students;',
-      'class Solution { solve() {} }',
-      'echo "Deploying to production..."',
-      'mqtt.publish("notice/board", msg)',
-      'esp8266.connect(SSID, PASSWORD)',
-      'response.status(200).json(data)',
-    ];
-
-    let W, H, cols, drops, fontSize;
-
-    function init() {
+    function resize() {
       W = canvas.width  = canvas.offsetWidth;
       H = canvas.height = canvas.offsetHeight;
-      fontSize = 13;
-      cols = Math.floor(W / (fontSize * 22)); // one column per ~22 chars wide
-      drops = [];
-      for (let i = 0; i < cols; i++) {
-        drops[i] = {
-          y: Math.random() * -50,
-          lineIndex: Math.floor(Math.random() * codeLines.length),
-          speed: 0.3 + Math.random() * 0.5,
-          opacity: 0.15 + Math.random() * 0.35,
-        };
-      }
     }
-    init();
-    window.addEventListener('resize', init);
+    resize();
+    window.addEventListener('resize', resize);
+
+    function Particle() {
+      this.x  = Math.random() * W;
+      this.y  = Math.random() * H;
+      this.vx = (Math.random() - 0.5) * 0.4;
+      this.vy = (Math.random() - 0.5) * 0.4;
+      this.r  = Math.random() * 1.5 + 0.5;
+      this.a  = Math.random() * 0.6 + 0.1;
+    }
+    Particle.prototype.update = function () {
+      this.x += this.vx;
+      this.y += this.vy;
+      if (this.x < 0) this.x = W;
+      if (this.x > W) this.x = 0;
+      if (this.y < 0) this.y = H;
+      if (this.y > H) this.y = 0;
+    };
+
+    for (let i = 0; i < 80; i++) particles.push(new Particle());
 
     function draw() {
-      // Dark fade trail
-      ctx.fillStyle = 'rgba(8,13,20,0.06)';
-      ctx.fillRect(0, 0, W, H);
-
-      drops.forEach((drop, i) => {
-        const x = i * (W / cols);
-        const line = codeLines[drop.lineIndex];
-
-        // Dim older text
-        ctx.font = `${fontSize}px 'Space Mono', monospace`;
-        ctx.fillStyle = `rgba(0,229,192,${drop.opacity * 0.4})`;
-        ctx.fillText(line, x, drop.y - fontSize * 2);
-
-        // Bright current line
-        ctx.fillStyle = `rgba(0,229,192,${drop.opacity})`;
-        ctx.fillText(line, x, drop.y);
-
-        // Brightest leading character highlight
-        ctx.fillStyle = `rgba(180,255,240,${drop.opacity + 0.2})`;
-        ctx.fillText(line.charAt(0), x, drop.y);
-
-        drop.y += fontSize * drop.speed;
-
-        // Reset when off screen
-        if (drop.y > H + fontSize * 3) {
-          drop.y = -fontSize * 2;
-          drop.lineIndex = Math.floor(Math.random() * codeLines.length);
-          drop.speed = 0.3 + Math.random() * 0.5;
-          drop.opacity = 0.15 + Math.random() * 0.35;
+      ctx.clearRect(0, 0, W, H);
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx   = particles[i].x - particles[j].x;
+          const dy   = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 110) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(0,229,192,${0.08 * (1 - dist / 110)})`;
+            ctx.lineWidth = 0.7;
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
         }
+      }
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0,229,192,${p.a})`;
+        ctx.fill();
+        p.update();
       });
-
       requestAnimationFrame(draw);
     }
     draw();
   }
 
-  /* ─────────────────────────────────────────
-     2. TYPING EFFECT
-  ───────────────────────────────────────── */
+  /* \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+     3. TYPING EFFECT  (short words \u2014 mobile safe)
+  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   const typedEl = document.getElementById('typed');
   const roles = [
     'Software Developer',
-    'Java | Python | SQL',
+    'Java Developer',
+    'Python Developer',
     'Problem Solver',
-    'IoT Enthusiast',
-    'Cloud Learner'
+    'IoT Enthusiast'
   ];
   let rIndex = 0, cIndex = 0, deleting = false;
 
@@ -129,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
       typedEl.textContent = full.slice(0, cIndex);
       if (cIndex >= full.length) {
         deleting = true;
-        setTimeout(tick, 1600);
+        setTimeout(tick, 1400);
         return;
       }
       setTimeout(tick, 100);
@@ -137,9 +127,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   tick();
 
-  /* ─────────────────────────────────────────
-     3. SCROLL REVEAL
-  ───────────────────────────────────────── */
+  /* \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+     4. SCROLL REVEAL
+  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   const revealEls = document.querySelectorAll('.reveal');
   const revealObs = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -148,25 +138,25 @@ document.addEventListener('DOMContentLoaded', function () {
         revealObs.unobserve(entry.target);
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.12 });
   revealEls.forEach(el => revealObs.observe(el));
 
-  /* ─────────────────────────────────────────
-     4. ACTIVE NAV + ACCENT COLOR PER SECTION
-  ───────────────────────────────────────── */
+  /* \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+     5. ACTIVE NAV + ACCENT COLOR PER SECTION
+  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   const sectionColors = {
     home:       '#00e5c0',
     about:      '#00bcd4',
     skills:     '#74b9ff',
     projects:   '#55efc4',
-    experience: '#ffd166',
+    experience: '#ffeaa7',
     contact:    '#a29bfe'
   };
   const navLinks = document.querySelectorAll('.main-nav .nav-link, .mobile-nav .nav-link');
 
   function setActiveNav(id) {
     navLinks.forEach(a => {
-      a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+      a.classList.toggle('active', a.getAttribute('href') === `#${id}`);
     });
   }
 
@@ -186,9 +176,9 @@ document.addEventListener('DOMContentLoaded', function () {
     sections.forEach(s => secObs.observe(s));
   }
 
-  /* ─────────────────────────────────────────
-     5. SMOOTH SCROLL
-  ───────────────────────────────────────── */
+  /* \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+     6. SMOOTH SCROLL
+  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       const target = this.getAttribute('href');
@@ -201,9 +191,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  /* ─────────────────────────────────────────
-     6. MOBILE HAMBURGER
-  ───────────────────────────────────────── */
+  /* \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+     7. MOBILE HAMBURGER
+  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   const hamburger = document.getElementById('hamburger');
   const mobileNav = document.getElementById('mobile-nav');
 
@@ -222,9 +212,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  /* ─────────────────────────────────────────
-     7. CERTIFICATE MODAL
-  ───────────────────────────────────────── */
+  /* \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+     8. CERTIFICATE MODAL
+  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   const modal   = document.getElementById('certificateModal');
   const certImg = document.getElementById('certImage');
 
@@ -251,30 +241,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.key === 'Escape') closeCertificate();
   });
 
-  /* ─────────────────────────────────────────
-     8. KEYBOARD ACCESSIBILITY
-  ───────────────────────────────────────── */
+  /* \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+     9. KEYBOARD ACCESSIBILITY
+  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
   document.querySelectorAll('.edu-card, .exp-card').forEach(el => {
     el.addEventListener('keypress', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        const attr = el.getAttribute('onclick') || '';
-        const match = attr.match(/openCertificate\(['"](.+?)['"]\)/);
-        if (match) openCertificate(match[1]);
-      }
-    });
-  });
-
-  /* ─────────────────────────────────────────
-     9. HEADER SHADOW ON SCROLL
-  ───────────────────────────────────────── */
-  const header = document.getElementById('site-header');
-  if (header) {
-    window.addEventListener('scroll', () => {
-      header.style.boxShadow = window.scrollY > 10
-        ? '0 4px 24px rgba(0,0,0,0.6)'
-        : 'none';
-    }, { passive: true });
-  }
-
-}); // end DOMContentLoaded
+        const match = el.getAttribute('onclick') &&
+          el.getAttribute('onclick').match(/openCertificate\
